@@ -3,7 +3,6 @@ var router = express.Router();
 
 const MongoClient = require('mongodb').MongoClient; //Importo la libreria mongodb
 
-/* GET users listing. */
 router.get('/movie_from_title/:title', function (req, res, next) {
     console.log(req.params); //Leggo i parametri passati all'url
     title = req.params.title;
@@ -14,7 +13,7 @@ router.get('/movie_from_title/:title', function (req, res, next) {
         // eseguo una find sulla collection
         collection.find({ 'title': `${title}` }).toArray((err, result) => {
             if (err) console.log(err.message); //Se c'è qualche errore lo stampo
-            else res.send(result);
+            else res.send(result); // mostra nel browser il risultato della get
             client.close(); //Quando ho terminato la find chiudo la sessione con il db
         }); //Eseguo la query e passo una funzione di callback
 
