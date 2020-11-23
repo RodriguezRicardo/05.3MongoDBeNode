@@ -1,9 +1,9 @@
 var express = require('express');
 var router = express.Router();
-
 const MongoClient = require('mongodb').MongoClient; //Importo la libreria mongodb
+const uri = 'mongodb+srv://ricardorodriguez:Rcy_kj0_p@nraboy-sample.bf8zs.mongodb.net/nraboy-sample?retryWrites=true&w=majority'
 
-//visualizza la lista di 10 film facendo sì che si possa richiedere un numero di film definito da un parametro
+/*visualizza la lista di 10 film facendo sì che si possa richiedere un numero di film definito da un parametro
 router.get('/list/:num', function (req, res, next) {
 
     console.log(req.params);
@@ -19,6 +19,28 @@ router.get('/list/:num', function (req, res, next) {
             client.close(); //Quando ho terminato la find chiudo la sessione con il db
         }); //Eseguo la query e passo una funzione di callback
     });
+});*/
+
+router.get('/list/:num', function (req, res, next) {
+
+    console.log(req.params);
+    let num = parseInt(req.params.num);
+    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    client.connect(getListMovies);
+
+    function getListMovies(err) {
+        if (err) console.log("Conessione al db non riuscita");
+        else {
+            const collection = client.db("sample_mflix").collection("movies");
+            collection.find().limit(num).toArray(callBackQuery);
+        }
+    } 
+    //quando la query va a buon fine, invia il risultato
+    function callBackQuery(err, result)  {
+        if (err) console.log(err.message); 
+        else res.send(result);
+        client.close(); 
+    } 
 });
 
 //una funzione che ci permette di ricercare il film in base al titolo.
